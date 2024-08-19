@@ -6,12 +6,12 @@
   dotnetCorePackages,
 }:
 let
-  version = "4.0.5455";
+  version = "4.0.5907";
   src = fetchFromGitHub {
     owner = "Azure";
     repo = "azure-functions-core-tools";
     rev = version;
-    sha256 = "sha256-Ip1m0/l0YWFosYfp8UeREg9DP5pnvRnXyAaAuch7Op4=";
+    hash = "sha256-Tg4OpZLhLUYSw1MKMNI7RsE1dWJB/RRmNG4pIlnPIEU=";
   };
   gozip = buildGoModule {
     pname = "gozip";
@@ -24,14 +24,15 @@ buildDotnetModule rec {
   pname = "azure-functions-core-tools";
   inherit src version;
 
-  dotnet-runtime = dotnetCorePackages.sdk_6_0;
+  dotnet-sdk = dotnetCorePackages.sdk_8_0;
+  dotnet-runtime = dotnetCorePackages.aspnetcore_8_0;
   nugetDeps = ./deps.nix;
-  useDotnetFromEnv = true;
+  useDotnetFromEnv = false;
   executables = [ "func" ];
 
   postPatch = ''
     substituteInPlace src/Azure.Functions.Cli/Common/CommandChecker.cs \
-      --replace "CheckExitCode(\"/bin/bash" "CheckExitCode(\"${stdenv.shell}"
+      --replace-fail "CheckExitCode(\"/bin/bash" "CheckExitCode(\"${stdenv.shell}"
   '';
 
   postInstall = ''
