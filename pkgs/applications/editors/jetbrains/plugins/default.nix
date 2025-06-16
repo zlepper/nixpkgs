@@ -139,6 +139,12 @@ in
                 substituteInPlace $(realpath "$exe") --replace-warn '${ide.outPath}' $out
               fi
             done
+
+            for exe in $out/${rootDir}/bin/*.sh; do
+              if [[ -x "$exe" ]]; then
+                substituteInPlace $(realpath "$exe") --replace-quiet '${ide.outPath}' $out
+              fi
+            done
           )
         '';
     };
